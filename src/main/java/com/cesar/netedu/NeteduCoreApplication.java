@@ -32,12 +32,12 @@ public class NeteduCoreApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         System.out.println("\n--------------------------------------------------");
-        System.out.println(" SISTEMA NETEDU - SERVIDOR HÍBRIDO INICIADO");
-        System.out.println(" 1. Web API (REST): Activa en puerto 8080 (Gestión)");
-        System.out.println(" 2. Base de Datos:  Conectada a PostgreSQL (Persistencia)");
+        System.out.println(" SISTEMA NETEDU - SERVIDOR INICIADO");
+        System.out.println(" Web API (REST): Activa en puerto 8080");
+        System.out.println(" Base de datos conectada a postgres");
         System.out.println("--------------------------------------------------\n");
 
-        // IMPORTANTE: Inicio el servidor TCP en un hilo NUEVO
+        // IMPORTANTE: Inicio el servidor TCP en un hilo nuevo
         // Si no hago esto, el bucle 'while(true)' bloquearía a Spring Boot y la web no funcionaría
         new Thread(this::iniciarServidorTCP).start();
     }
