@@ -2,35 +2,43 @@ package com.cesar.netedu.model;
 
 import jakarta.persistence.*;
 
+/**
+ * ENTIDAD USUARIO
+ * * Uso la anotación @Entity para que JPA convierta esta clase automáticamente
+ *   en una tabla 'usuarios' dentro de Postgres
+ *   esto me facilita la gestión de datos sin escribir SQL manual constantemente
+ */
 @Entity
 @Table(name = "usuarios")
 public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id; // Llave primaria autogenerada
 
     @Column(nullable = false, unique = true)
-    private String username;
+    private String username; // Identificador del alumno
 
     @Column(nullable = false)
-    private String password; // En producción esto debería ser un hash
+    private String password; 
 
-    private String rol; // "ESTUDIANTE" o "ADMIN"
+    // Rol para distinguir entre Profesor (Admin) y Alumno
+    private String rol; 
 
-    private int puntajeTotal; // Para la gamificación
+    // Campo clave para la Gamificación: Acumula el progreso del alumno
+    private int puntajeTotal; 
 
-    // Constructores
+    // Constructor vacío requerido por JPA
     public Usuario() {}
 
     public Usuario(String username, String password, String rol) {
         this.username = username;
         this.password = password;
         this.rol = rol;
-        this.puntajeTotal = 0;
+        this.puntajeTotal = 0; // Todos empiezan con 0 puntos (esto es importante por la forma en la que lo quiero desarrollar)
     }
 
-    // Getters y Setters
+    // --- Getters y Setters ---
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
