@@ -4,6 +4,7 @@ import com.cesar.netedu.model.Pregunta;
 import com.cesar.netedu.model.Usuario;
 import com.cesar.netedu.service.JuegoService;
 import com.cesar.netedu.service.UsuarioService;
+import com.cesar.netedu.service.UDPService;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -22,6 +23,7 @@ public class ClientHandler implements Runnable {
     private Socket clientSocket;
     private JuegoService juegoService;
     private UsuarioService usuarioService; // agrego el servicio de usuarios para poder validar contraseñas
+    private UDPService udpService; // agrego el servicio UDP para enviar notificaciones rápidas
     
     private PrintWriter out;    // Canal de salida (Enviar datos al alumno)
     private BufferedReader in;  // Canal de entrada (Leer datos del alumno)
@@ -35,13 +37,14 @@ public class ClientHandler implements Runnable {
     /**
      * CONSTRUCTOR
      * Recibo el socket de conexión y las instancias de los servicios
-     * es necesario pasar 'juegoService' y 'usuarioService' por parámetro porque, al ser un hilo manual,
-     * springboot no puede inyectar dependencias automáticamente aquí
+     * es necesario pasar 'juegoService', 'usuarioService' y 'udpService' por parámetro 
+     * porque, al ser un hilo manual, springboot no puede inyectar dependencias automáticamente aquí
      */
-    public ClientHandler(Socket socket, JuegoService juegoService, UsuarioService usuarioService) {
+    public ClientHandler(Socket socket, JuegoService juegoService, UsuarioService usuarioService, UDPService udpService) {
         this.clientSocket = socket;
         this.juegoService = juegoService;
         this.usuarioService = usuarioService;
+        this.udpService = udpService;
     }
 
     @Override
@@ -134,6 +137,11 @@ public class ClientHandler implements Runnable {
         if (usuarioEncontrado != null) {
             usuarioLogueado = usuarioEncontrado; // guardo la sesión en la memoria del hilo
             out.println("EXITO: Hola de nuevo " + usuarioEncontrado.getUsername() + ". Tienes " + usuarioEncontrado.getPuntajeTotal() + " puntos.");
+            
+            // --- Aqui uso UDP ---
+            // mando un saludo rápido por el canal UDP para verificar que funciona
+            udpService.enviarMensaje(clientSocket.getInetAddress(), "UDP_CHECK: Sesion iniciada para " + usuarioEncontrado.getUsername());
+            
             out.println("Escribe 'JUGAR' para comenzar.");
         } else {
             out.println("ERROR: Usuario o password incorrectos.");
@@ -206,6 +214,10 @@ public class ClientHandler implements Runnable {
             // IMPORTANTE: guardo los puntos en la BD usando el servicio
             usuarioService.sumarPuntos(usuarioLogueado, puntosGanados);
             out.println("Tu puntaje total ahora es: " + usuarioLogueado.getPuntajeTotal());
+
+            // --- esta parte tambien es parte del UDP ---
+            // Envío una notificación "flash" al usuario usando sockets sin conexión
+            udpService.enviarMensaje(clientSocket.getInetAddress(), "ALERT: Has sumado +" + puntosGanados + " puntos exp!");
             
         } else {
             out.println("INCORRECTO. La respuesta era " + preguntaActual.getOpcionCorrecta());

@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import com.cesar.netedu.socket.ClientHandler; 
 import com.cesar.netedu.service.JuegoService; // Importo la lógica del juego
 import com.cesar.netedu.service.UsuarioService;
+import com.cesar.netedu.service.UDPService;
 
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -36,6 +37,9 @@ public class NeteduCoreApplication implements CommandLineRunner {
 
     @Autowired
     private UsuarioService usuarioService;
+
+    @Autowired
+    private UDPService udpService;
 
     public static void main(String[] args) {
         // Arranco el uso de Spring 
@@ -76,7 +80,7 @@ public class NeteduCoreApplication implements CommandLineRunner {
                 // por cada alumno que llega creo un objeto 'ClientHandler'
                 // luego le paso 'clientSocket' y tambien 'juegoService'
                 // esto permite que el hilo tenga acceso a las preguntas de la base de datos
-                ClientHandler handler = new ClientHandler(clientSocket, juegoService, usuarioService);
+                ClientHandler handler = new ClientHandler(clientSocket, juegoService, usuarioService, udpService);
                 
                 // Lanzo el hilo independiente
                 new Thread(handler).start(); 
