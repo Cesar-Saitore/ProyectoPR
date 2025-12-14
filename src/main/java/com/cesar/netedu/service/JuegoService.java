@@ -36,9 +36,29 @@ public class JuegoService {
         return todas.get(indice);
     }
 
-    /**
-     *   Aquí a futuro implementaré lógica en funciones como estas:
-     * - validarRespuesta(idPregunta, respuestaUsuario)
-     * - calcularPuntos()
-     */
+    // Metodo para borrar una pregunta si me equivoque
+    public boolean borrarPregunta(Long id) {
+        if (preguntaRepository.existsById(id)) {
+            preguntaRepository.deleteById(id);
+            return true; // Se logro borrar
+        }
+        return false; // No existe el id de la pregunta que se quiere borrrar
+    }
+
+    // Método para editar una pregunta existente
+    public Pregunta editarPregunta(Long id, Pregunta nuevosDatos) {
+        // Busco si existe la pregunta con ese id
+        return preguntaRepository.findById(id).map(preguntaExistente -> {
+            // Si existe, actualizo sus campos con los nuevos datos
+            preguntaExistente.setEnunciado(nuevosDatos.getEnunciado());
+            preguntaExistente.setOpcionA(nuevosDatos.getOpcionA());
+            preguntaExistente.setOpcionB(nuevosDatos.getOpcionB());
+            preguntaExistente.setOpcionC(nuevosDatos.getOpcionC());
+            preguntaExistente.setOpcionCorrecta(nuevosDatos.getOpcionCorrecta());
+            preguntaExistente.setPuntos(nuevosDatos.getPuntos());
+            
+            // Guardo los cambios en la base de datos
+            return preguntaRepository.save(preguntaExistente);
+        }).orElse(null); // Si no existe el is retorno null
+    }
 }
