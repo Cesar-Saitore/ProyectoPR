@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Editor de Pregunta</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #1e2128; color: white; }
+        .card { background-color: #282c34; border: 1px solid #444; }
+        .form-control, .form-select { background-color: #1e2128; border: 1px solid #444; color: white; }
+        .form-control:focus { background-color: #1e2128; color: white; border-color: #1cb0f6; }
+    </style>
+</head>
+<body>
+    <div class="container mt-5" style="max-width: 700px;">
+        <div class="card p-4">
+            <h2 class="mb-4 text-warning" th:text="${titulo}">Editar</h2>
+            
+            <form action="/web/admin/guardar" method="post" th:object="${pregunta}">
+                <input type="hidden" th:field="*{id}">
+
+                <div class="mb-3">
+                    <label>Enunciado de la Pregunta</label>
+                    <textarea th:field="*{enunciado}" class="form-control" rows="3" required></textarea>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label>Opción A</label>
+                        <input type="text" th:field="*{opcionA}" class="form-control" required>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label>Opción B</label>
+                        <input type="text" th:field="*{opcionB}" class="form-control" required>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label>Opción C</label>
+                        <input type="text" th:field="*{opcionC}" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label>Respuesta Correcta</label>
+                        <select th:field="*{opcionCorrecta}" class="form-select">
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>Puntos</label>
+                        <input type="number" th:field="*{puntos}" class="form-control" value="10">
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2 mt-4">
+                    <button type="submit" class="btn btn-success btn-lg">💾 Guardar Cambios</button>
+                    <a href="/web/admin/panel" class="btn btn-secondary">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

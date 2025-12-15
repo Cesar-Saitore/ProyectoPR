@@ -1,25 +1,92 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>NetEdu Web</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>NetEdu - Jugar</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-dark text-white text-center">
     
-    <div class="container mt-5">
-        <h1>🎮 NetEdu - Modo Web</h1>
+    <style>
+        /* COLORES IDENTICOS A TU JAVA CLIENT */
+        body {
+            background-color: #1e2128; /* Fondo Oscuro */
+            color: white;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .card-pregunta {
+            background-color: #282c34;
+            border: 2px solid #3c3c3c;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .btn-opcion {
+            background-color: #1cb0f6; /* Azul Opción */
+            color: white;
+            border: none;
+            border-radius: 12px;
+            border-bottom: 4px solid #118cc6; /* Efecto 3D */
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-bottom: 12px;
+            width: 100%;
+            padding: 15px;
+            transition: transform 0.1s;
+        }
+        .btn-opcion:active {
+            transform: translateY(4px);
+            border-bottom: 0px;
+        }
+        .progress {
+            height: 10px;
+            background-color: #373737;
+            border-radius: 5px;
+        }
+        .progress-bar {
+            background-color: #58cc02; /* Verde Duolingo */
+        }
+        .text-xp {
+            color: #ffc107; /* Dorado */
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container mt-4" style="max-width: 600px;">
         
-        <div class="card bg-secondary mt-4">
-            <div class="card-body">
-                <h3 th:text="${pregunta.enunciado}">¿Pregunta?</h3>
-                
-                <form action="/web/responder" method="post" class="mt-4">
-                    <button name="respuesta" value="A" class="btn btn-primary btn-lg w-100 mb-2" th:text="${pregunta.opcionA}"></button>
-                    <button name="respuesta" value="B" class="btn btn-primary btn-lg w-100 mb-2" th:text="${pregunta.opcionB}"></button>
-                    <button name="respuesta" value="C" class="btn btn-primary btn-lg w-100 mb-2" th:text="${pregunta.opcionC}"></button>
-                </form>
-            </div>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h5 class="m-0 text-xp" th:text="${usuario.username}">NombreJugador</h5>
+        <small class="text-secondary" th:text="'Puntos Totales: ' + ${usuario.puntajeTotal}">Pts: 0</small>
+    </div>
+    
+    <a href="/web/logout" class="btn btn-sm btn-outline-danger">Cerrar Sesión</a>
+</div>
         </div>
+
+        <div class="card-pregunta text-center">
+            <h5 class="text-secondary mb-3">PREGUNTA</h5>
+            <h3 th:text="${pregunta.enunciado}">Cargando pregunta...</h3>
+        </div>
+
+        <form action="/web/responder" method="post">
+            
+            <input type="hidden" name="respuestaCorrecta" th:value="${pregunta.opcionCorrecta}">
+            
+            <button type="submit" name="respuestaUsuario" value="A" class="btn btn-opcion">
+                <span th:text="${pregunta.opcionA}">Opción A</span>
+            </button>
+            
+            <button type="submit" name="respuestaUsuario" value="B" class="btn btn-opcion">
+                <span th:text="${pregunta.opcionB}">Opción B</span>
+            </button>
+            
+            <button type="submit" name="respuestaUsuario" value="C" class="btn btn-opcion">
+                <span th:text="${pregunta.opcionC}">Opción C</span>
+            </button>
+        </form>
+
     </div>
 
 </body>
